@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link href="css/font-awesome.css" rel="stylesheet">
+	<title>Document</title>
+	<link rel="stylesheet" type="text/css" href="css/common.css">
+	<style type="text/css">
+		body,html{
+			height: 100%;
+			overflow: auto;
+			font-family: "Arial","Microsoft YaHei","黑体","宋体",sans-serif;
+		}
+		body::-webkit-scrollbar {
+        		display: none;//清除滚动条
+    		}
+		.distribution{
+			height: 100%;
+			box-sizing: border-box;
+		}
+		.card-container{
+			height: auto;
+			margin: 15px;
+			box-shadow:0 0 10px #ccc;
+		}
+		.card-container .card-title{
+			padding: 10px;
+			font-size: 16px;
+			font-weight: 700;
+			border-bottom: 1px dashed #000;
+		}
+		.card-container .card-content{
+			margin :10px;
+		}
+		.card-container .card-content .card-from{
+			border-bottom: 1px solid #eee;
+			display: flex;
+			flex-direction: row;
+		}
+		.card-content .card-from span{
+			margin: auto;
+			font-size: 16px;
+			font-weight: 500;
+			width: 50px;
+		}
+
+		.card-content .card-from .ul-container,
+		.card-content .card-from .off{
+			width: 250px;
+            height: 40px;
+            margin: 0 auto;
+            font-size: 16px;
+            background-color: #fff;
+            position: relative;
+		}
+		#users{
+			z-index: 10;
+		}
+		#varieties{
+			z-index: 5;
+		}
+		.card-content .card-from .off input{
+			padding: 0 15px;
+            line-height: 40px;
+            cursor: pointer;
+            border:0 none;
+            font-size: 16px;
+		}
+		.card-content .card-from .off input::-webkit-input-placeholder {
+            color: #000;font-size: 16px;font-family: "Arial","Microsoft YaHei","黑体","宋体",sans-serif;
+        }
+        .card-content .card-from .off input::-moz-placeholder {
+            color: #000;font-size: 16px;font-family: "Arial","Microsoft YaHei","黑体","宋体",sans-serif;
+        }
+        .card-content .card-from .off input::-ms-input-placeholder {
+            color: #000;font-size: 16px;font-family: "Arial","Microsoft YaHei","黑体","宋体",sans-serif;
+        }
+		.card-content .card-from .ul-container:after{
+			content: '';
+			display:block;
+            width: 10px;
+            height: 10px;
+            border-left: 1px #ccc solid;
+            border-bottom: 1px #ccc solid;
+            position:absolute;
+            top:11px;
+            right: 12px;
+            transform:rotate(-45deg);
+            transition: transfrom .3s ease-in,top .3s  ease-out;
+		}
+		.card-content .card-from .ul-container p{
+			padding: 0 15px;
+            line-height: 40px;
+            cursor: pointer;
+		}
+		.card-content .card-from .ul-container ul{
+			background-color: #fff;
+            width: 100%;
+            overflow-y:auto;
+            position: absolute;;
+            top: 40px;
+            left: 0;
+            max-height: 0;
+		}
+		.card-content .card-from .ul-container ul li{
+			padding: 0 15px;
+            line-height: 40px;
+            cursor: pointer;
+		}
+		.card-content .card-from .ul-container ul li:hover{
+			background-color: #e0e0e0;
+		}
+		.card-content .card-from .ul-container ul li.selected{
+			background-color: #39f;
+            color: #fff;
+		}
+		@-webkit-keyframes slide-down{
+            0%{transform: scale(1,0);}
+            25%{transform: scale(1,1.2);}
+            50%{transform: scale(1,0.85);}
+            75%{transform: scale(1,1.05);}
+            100%{transform: scale(1,1);}
+        }
+        .card-content .card-from .ul-container.open ul{
+        	max-height: 250px;
+            transform-origin: 50% 0;
+            -webkit-animation:slide-down .5s ease-in;
+            transition: max-height .2s ease-out;
+        }
+        .card-content .card-from .ul-container.open:after{
+        	transform: rotate(-225deg);
+            top: 18px;
+            transition: all .3s ease-in;
+            z-index: 10;
+        }
+        .profile-card__button{
+        	  background: none;
+              border: none;
+              margin: 15px 15px;
+              font-size:26px;
+              font-weight: 700;
+              color: #fff;
+              cursor: pointer;
+              backface-visibility: hidden;
+              transition: all .3s;
+              border-radius:50px;
+              min-width: 250px;
+              min-height: 50px;
+        }
+        .profile-card__button.button--blue {
+          background: linear-gradient(45deg, #1da1f2, #0e71c8);
+          box-shadow: 0px 4px 30px rgba(19, 127, 212, 0.4);
+        }
+        .profile-card__button.button--blue:hover {
+          box-shadow: 0px 7px 30px rgba(19, 127, 212, 0.75);
+        }
+        .card-btn{
+        	display: flex;
+        	justify-content: center;
+        	text-align: center;
+        }
+        /*-------------------历史-------------------*/
+        .card-history{
+			height: auto;
+        	overflow: hidden;
+        	clear: none;
+        }
+        .card-history::-webkit-scrollbar {
+        	display: none;//清除滚动条
+    	}
+        
+        .card-history .history-card{
+			height: 400px;
+			margin: 15px;
+			box-shadow:0 0 10px #ccc;
+        }
+        #visible-block{
+        	text-align: center;
+        	justify-content: center;
+        	visibility: hidden;
+        	font-size: 16px;
+        }
+        @keyframes fadeInLeft {
+		  from {
+		    opacity: 0;
+		    transform: translate3d(-100%, 100%, 0);
+		  }
+
+		  to {
+		    opacity: 1;
+		    transform: none;
+		  }
+		}
+
+		/*添加动画*/
+		.card-container{
+		    animation-duration: 1s;
+		    animation-fill-mode: both;
+		    animation-name: fadeInLeft;
+		}
+		/*-------------搜索历史------------*/
+		.select-history{
+			border-bottom: 1px solid #eee;
+			border-top: 1px solid #eee;
+			margin: 10px;
+		}
+		.select-history input,.select-history button {
+            border: none;
+            outline: none;
+        }
+
+        .select-history input {
+            width: 50%;
+            height: 42px;
+            padding-left: 13px;
+        }
+
+        .select-history button {
+            height: 42px;
+            width: 42px;
+            cursor: pointer;
+
+        }
+        form {
+            position: relative;
+            width: 300px;
+            margin: 0 auto;
+        }
+		.bar1 {background: #fff}
+        .bar1 input {
+            border: 2px solid #7BA7AB;
+            border-radius: 5px;
+            background: #F9F0DA;
+            color: #9E9C9C;
+        }
+        .bar1 button {
+            top: 0;
+            right: 0;
+            background: #7BA7AB;
+            border-radius: 0 5px 5px 0;
+        }
+        .bar1 button:before {
+            content: "\f002";
+            font-family: FontAwesome;
+            font-size: 16px;
+            color: #F9F0DA;
+        }
+	</style>
+</head>
+<body>
+	<div class="distribution">
+		<div class="card-container">
+			<div class="card-title">
+				<p>基本信息</p>
+			</div>
+			<div class="card-content">
+				<div class="card-from">
+					<span>时间</span>
+					<div class="off" id="num">
+						<input id="time" type="text"  readonly />
+					</div>					
+				</div>
+				<div class="card-from">
+					<span>分配给</span>
+					<div class="ul-container" id="users">
+						<p>选择农民</p>
+			            <ul>
+			                <li data-value="选择农民" class="selected">选择农民</li>
+			                <li data-value="杨宇轩">杨宇轩</li>
+			                <li data-value="王里钻">王里钻</li>
+			                <li data-value="牛粪诺">牛粪诺</li>
+			                <li data-value="李顺">李顺</li>
+			            </ul>
+					</div>					
+				</div>
+				<div class="card-from">
+					<span>品种</span>
+					<div class="ul-container" id="varieties">
+						<p>选择鸡的品种</p>
+			            <ul>
+			                <li data-value="选择鸡的品种" class="selected">选择鸡的品种</li>
+			                <li data-value="国产鸡">国产鸡</li>
+			                <li data-value="欧美鸡">欧美鸡</li>
+			                <li data-value="日本鸡">日本鸡</li>
+			                <li data-value="美国鸡">美国鸡</li>
+			            </ul>
+					</div>					
+				</div>
+				<div class="card-from">
+					<span>数量</span>
+					<div class="off" id="num">
+						<input id="tel" type="number" placeholder="数量(只)" onfocus="this.placeholder=''" onblur="this.placeholder='数量(只)'" required/>
+					</div>					
+				</div>
+				<div class="card-from">
+					<span>总额</span>
+					<div class="off" id="num">
+						<input id="tel" type="number" placeholder="总额(元)" onfocus="this.placeholder=''" onblur="this.placeholder='总额(元)'" required/>
+					</div>					
+				</div>
+			</div>
+		</div>
+		<div class="card-history">
+			<div class="history-container">
+				
+			</div>
+			<div id="visible-block">加载中...</div>
+		</div>
+
+	</div>
+<script src="js/jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="js/lazyLoad.js"></script>
+<script type="text/javascript">
+	lazyLoad.init($('#visible-block'));
+</script>
+
+</body>
+</html>
